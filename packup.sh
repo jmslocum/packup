@@ -93,9 +93,9 @@ pack_up_dir() {
          popd
       else
          echo "packing ${dirname}${file}"
-         name[$index]=\"${dirname}${file}\"
-         sum[$index]=\"$(md5 "${file}")\"
-         data[$index]=\"$(base64 "${file}")\"
+         name[$index]="${dirname}${file}"
+         sum[$index]=$(md5 "${file}")
+         data[$index]=$(base64 "${file}")
          (( index++ ))
       fi
    done
@@ -147,9 +147,9 @@ write_packed_data() {
    local index=0
    local num=${#name[@]}
    for (( i=0; i < num; i++ )); do
-      echo "name[$i]=${name[$i]}" >> "$output"
-      echo "sum[$i]=${sum[$i]}" >> "$output"
-      echo "data[$i]=${data[$i]}" >> "$output"
+      echo "name[$i]=\"${name[$i]}\"" >> "$output"
+      echo "sum[$i]=\"${sum[$i]}\"" >> "$output"
+      echo "data[$i]=\"${data[$i]}\"" >> "$output"
       echo "" >> "$output"
    done
 }
