@@ -142,7 +142,7 @@ unpack_data() {
          mkdir -p "$dir"
       fi
 
-      echo ${data[$i]} | base64 -d -i > "${name[$i]}"
+      echo ${data[$i]} | base64 -d > "${name[$i]}"
       if [ "$(md5 "${name[$i]}")" != "${sum[$i]}" ]; then
          echo "Failed to verify checksum for ${name[$i]}"
          exit 1
