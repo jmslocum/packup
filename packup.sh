@@ -135,6 +135,7 @@ pack_up_dir() {
 # This function will unpack the data from the packed
 # script
 unpack_data() {
+   echo ""
    local index=0
    local num=${#name[@]}
    local dir=""
@@ -169,6 +170,7 @@ sum=()
 data=()
 md5command=""
 
+echo -n "Loading packed resources"
 EOF
 }
 
@@ -176,12 +178,14 @@ EOF
 # This will write out the data in packed form to the 
 # packed script. 
 write_packed_data() {
+   echo "writing packed data to $output"
    local index=0
    local num=${#name[@]}
    for (( i=0; i < num; i++ )); do
       echo "name[$i]=\"${name[$i]}\"" >> "$output"
       echo "sum[$i]=\"${sum[$i]}\"" >> "$output"
       echo "data[$i]=\"${data[$i]}\"" >> "$output"
+      echo "echo -n \".\"" >> "$output"
       echo "" >> "$output"
    done
 }
