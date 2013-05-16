@@ -14,6 +14,7 @@ data=()
 name=()
 sum=()
 md5command=""
+decodeflag=""
 index=0
 output=${1:-"output.sh"}
 
@@ -26,6 +27,14 @@ check_for_programs() {
       echo "Missing base64, aborting" 
       return 1 
    };
+
+   # determine which flag to use -d or -D
+   base64 -D < /dev/null > /dev/null 2>&1
+   if [ $? -eq 0 ]; then
+      decodeflag="-D"
+   else
+      decodeflag="-d"
+   fi
 
    which egrep >/dev/null 2>&1 || { 
       echo "Missing egrep, aborting" 
@@ -148,7 +157,7 @@ unpack_data() {
          mkdir -p "$dir"
       fi
 
-      echo ${data[$i]} | base64 -d > "${name[$i]}"
+      echo ${data[$i]} | base64 $decodeflag > "${name[$i]}"
       if [ "$(md5 "${name[$i]}")" != "${sum[$i]}" ]; then
          echo "Failed to verify checksum for ${name[$i]}"
          exit 1
@@ -169,8 +178,9 @@ name=()
 sum=()
 data=()
 md5command=""
+decodeflag=""
 
-echo -n "Loading packed resources"
+echo -n "Loading packed resources "
 EOF
 }
 
