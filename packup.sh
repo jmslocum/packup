@@ -13,15 +13,40 @@
 data=()
 name=()
 sum=()
+md5command=""
 index=0
 output=${1:-"output.sh"}
 
 ##
-# This will make sure the base64 and md5sum programs installed
-# otherwise this wont work very well
+# This will make sure that the support programs are installed
+# and that the correct version is used depending on the system
+# it is being run on (OSX and FreeBSD use md5, Linux md5sum)
 check_for_programs() {
-   type base64 >/dev/null 2>&1 || { echo "Missing base64, aborting"; return 1; }
-   type md5sum >/dev/null 2>&1 || { echo "Missing md5sum, aborting"; return 1; }
+   which base64 >/dev/null 2>&1 || { 
+      echo "Missing base64, aborting" 
+      return 1 
+   };
+   
+   which egrep >/dev/null 2>&1 || { 
+      echo "Missing egrep, aborting" 
+      return 1 
+   };
+
+   which md5sum >/dev/null 2>&1
+   if [ $? -eq 0 ]; then
+      md5command="md5sum"
+   fi
+
+   which md5 >/dev/null 2>&1
+   if [ $? -eq 0 ]; then
+      md5command="md5"
+   fi
+
+   [ -z $md5command ] && { 
+      echo "Missing md5 command (md5 or md5sum), aborting" 
+      return 1 
+   };
+
    return 0
 }
 
@@ -29,7 +54,7 @@ check_for_programs() {
 # this function will get the md5sum for a file and return
 # just the hash
 md5() {
-   md5sum "$1" | cut -d " " -f 1
+   command $md5command "$1" | egrep -o "[0-9a-fA-F]{32}"
 }
 
 ##
