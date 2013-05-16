@@ -155,6 +155,8 @@ write_packed_data() {
 }
 
 write_script_footer() {
+   echo "check_for_programs" >> "$output"
+   echo '[ $? -ne 0 ] && exit 1' >> "$output"
    echo "pre_run" >> "$output"
    echo "unpack_data" >> "$output"
    echo "post_run" >> "$output"
@@ -166,7 +168,8 @@ write_script_footer() {
 run_pack() {
 
    # Make sure we have the requiered programs
-   [ check_for_programs ] || exit 1
+   check_for_programs
+   [ $? -ne 0 ] && exit 1
 
    #pack up the data in the current directory
    pack_up_dir
