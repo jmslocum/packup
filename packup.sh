@@ -26,10 +26,15 @@ check_for_programs() {
       echo "Missing base64, aborting" 
       return 1 
    };
-   
+
    which egrep >/dev/null 2>&1 || { 
       echo "Missing egrep, aborting" 
       return 1 
+   };
+
+   which tr >/dev/null 2>&1 || {
+      echo "Missing tr, aborting"
+      return 1
    };
 
    which md5sum >/dev/null 2>&1
@@ -116,11 +121,11 @@ pack_up_dir() {
          pushd "$file"
          pack_up_dir "${dirname}${file}/"
          popd
-      else
+      elif [ -f "$file" -a -r "$file" ]; then
          echo "packing ${dirname}${file}"
          name[$index]="${dirname}${file}"
          sum[$index]=$(md5 "${file}")
-         data[$index]=$(base64 "${file}")
+         data[$index]=$(base64 "${file}" | tr -d [:space:])
          (( index++ ))
       fi
    done
@@ -162,6 +167,8 @@ write_script_header() {
 name=()
 sum=()
 data=()
+md5command=""
+
 EOF
 }
 
