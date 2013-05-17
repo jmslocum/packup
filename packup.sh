@@ -31,7 +31,7 @@ check_for_programs() {
    # determine which flag to use -d or -D
    # the UNIX version of base64 is a pain, and does
    # not return a failure exit code
-   baserr=$(base64 -D 2>&1 >/dev/null)
+   baserr=$(base64 -D </dev/null 2>&1 >/dev/null)
    if [ $? -eq 0 -a -z "$baserr" ]; then
       decodeflag="-D"
    else
